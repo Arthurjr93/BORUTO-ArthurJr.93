@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boruto Episode Dashboard Hub - Arthur Jr.</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        borutoBlue: '#00d2ff',
+                        borutoDark: '#070a14',
+                        borutoCard: '#0f172a',
+                        borutoOrange: '#ff8c00',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive, sans-serif; }
+        .teko-font { font-family: 'Teko', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #070a14; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    </style>
+</head>
+<body class="bg-borutoDark text-slate-100 min-h-screen flex flex-col selection:bg-borutoOrange selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Header Section -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-borutoDark/90 border-b border-slate-800/80 shadow-2xl">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-borutoOrange to-amber-500 flex items-center justify-center shadow-lg shadow-borutoOrange/20 flex-shrink-0">
+                    <i class="fa-solid fa-bolt text-slate-950 text-lg font-black"></i>
+                </div>
+                <div class="overflow-hidden">
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-xl font-extrabold tracking-wide teko-font uppercase bg-gradient-to-r from-borutoOrange via-amber-300 to-borutoBlue bg-clip-text text-transparent">
+                            Boruto Episode Dashboard Hub
+                        </h1>
+                        <button onclick="toggleHeaderDesc()" id="toggleDescBtn" class="text-[10px] text-amber-400 hover:underline focus:outline-none flex items-center gap-1 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
+                            <span id="toggleText">Selengkapnya</span> <i id="toggleIcon" class="fa-solid fa-chevron-down text-[9px]"></i>
+                        </button>
+                    </div>
+                    <p id="subDescription" class="text-[11px] text-slate-400 font-medium leading-relaxed max-w-xl line-clamp-2 transition-all duration-300">
+                        Buatkan poster anime vertikal ukuran 572x1024 piksel tentang anime BORUTO (LOGO ASLI NYA). Di pojok kanan bawah: Tambahkan karakter badut utuh (tampak seluruh tubuh dari kepala sampai kaki, bukan logo bulat) yang sedang melambaikan tangan menyapa. Di bagian bawah: Tambahkan teks "KLIK DAN TONTON" dan di garis paling bawah tulisan "Support By Arthur Jr.". BADUT MENYAPA. Visual disesuaikan dengan tema ninja anime Boruto yang ada di sinopsis sesuai episode terkait. BUATLAH KATA “EPISODE” MENJADI “Episode”. “Episode & Judul” SELALU TEXT BESAR CENTER TENGAH ATAS DI BAWAH “LOGO BORUTO”. SELALAU BERUBAH VISUAL DARI GAMBAR HASIL SEBLUMNYA JGAN PERNAH MIRIP ATAU MENYERUPAI. Di bagian atas tengah: Tulis teks judul sangat besar "BORUTO" dan Episode & Judul terkait.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2.5 self-end md:self-center flex-shrink-0">
+                <button onclick="copyMainPromptText(event)" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition shadow-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                    <span class="hidden sm:inline">Salin Prompt Utama</span>
+                </button>
+                <button onclick="openDownloadModal()" class="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-borutoOrange text-slate-950 font-bold px-3.5 py-2 rounded-xl text-xs shadow-lg shadow-amber-500/20 hover:opacity-95 transition transform active:scale-95">
+                    <i class="fa-solid fa-download text-xs"></i>
+                    <span class="hidden sm:inline">Download Data</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Hub -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+        
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 border border-slate-800/80 p-6 shadow-xl">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-borutoOrange/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-10 -top-10 w-48 h-48 bg-borutoBlue/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 space-y-4">
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Pencarian & Salin Judul / Prompt Episode</h2>
+                    <p class="text-xs text-slate-400 mt-1">
+                        Tiap baris tersusun rata kiri dengan tombol "Copy Eps & Judul" serta "Salin Prompt". Versi Online Hosting Aktif.
+                    </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-grow">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                        </span>
+                        <input type="text" id="searchInput" oninput="filterEpisodes()" placeholder="Cari nomor (misal: 5, 12, 13, 14, 93, 284) atau judul..." 
+                            class="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-borutoOrange focus:ring-1 focus:ring-borutoOrange transition shadow-inner">
+                    </div>
+                    <select id="rangeFilter" onchange="filterEpisodes()" class="py-3 px-4 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-300 focus:outline-none focus:border-borutoOrange transition cursor-pointer">
+                        <option value="all">Semua Episode (1 - 293)</option>
+                        <option value="1-50">Episode 1 - 50</option>
+                        <option value="51-100">Episode 51 - 100</option>
+                        <option value="101-150">Episode 101 - 150</option>
+                        <option value="151-200">Episode 151 - 200</option>
+                        <option value="201-250">Episode 201 - 250</option>
+                        <option value="251-293">Episode 251 - 293 (Sasuke Retsuden & Code Arc)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between px-1">
+            <p id="resultCount" class="text-xs text-slate-400 font-medium">Menampilkan 293 dari 293 Episode</p>
+            <div class="text-[11px] text-amber-400/90 font-medium bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/20">
+                <i class="fa-solid fa-circle-check mr-1 text-[10px]"></i> Format Salin: <code>Episode [No] - [Judul]</code>
+            </div>
+        </div>
+
+        <div id="episodeGrid" class="flex flex-col gap-2.5">
+            <!-- Dynamically populated -->
+        </div>
+
+    </main>
+
+    <!-- Download Modal -->
+    <div id="downloadModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-download text-amber-400"></i> Download Data Episode
+                </h3>
+                <button onclick="closeDownloadModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-400">Pilih format berkas untuk diunduh:</p>
+            
+            <div class="grid grid-cols-1 gap-3 pt-2">
+                <button onclick="downloadFile('csv')" class="flex items-center justify-between p-4 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 transition group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">CSV</div>
+                        <div class="text-left">
+                            <div class="text-xs font-bold text-white group-hover:text-amber-400 transition">Format CSV</div>
+                            <div class="text-[10px] text-slate-400">Kompatibel dengan Microsoft Excel & Google Sheets</div>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-slate-500 group-hover:text-amber-400 transition"></i>
+                </button>
+
+                <button onclick="downloadFile('json')" class="flex items-center justify-between p-4 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 transition group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold">JSON</div>
+                        <div class="text-left">
+                            <div class="text-xs font-bold text-white group-hover:text-amber-400 transition">Format JSON</div>
+                            <div class="text-[10px] text-slate-400">Cocok untuk integrasi database / developer</div>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-slate-500 group-hover:text-amber-400 transition"></i>
+                </button>
+
+                <button onclick="downloadFile('txt')" class="flex items-center justify-between p-4 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 transition group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">TXT</div>
+                        <div class="text-left">
+                            <div class="text-xs font-bold text-white group-hover:text-amber-400 transition">Format Text Bersih</div>
+                            <div class="text-[10px] text-slate-400">Daftar teks urut siap salin/cetak</div>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-slate-500 group-hover:text-amber-400 transition"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/60 mt-12 py-6">
+        <div class="max-w-4xl mx-auto px-4 text-center text-xs text-slate-500 space-y-1">
+            <p>Boruto Episode Dashboard Hub — Support By Arthur Jr.</p>
+            <p class="text-slate-600">Online Cloud Edition (1 sampai 293 Episode).</p>
+        </div>
+    </footer>
+
+    <!-- Application Script -->
+    <script>
+        const episodesData = [
+            { no: 1, title: "Boruto Uzumaki!!" }, { no: 2, title: "Anak Hokage..!" }, { no: 3, title: "Metal Lee Mengamuk!" },
+            { no: 4, title: "Pertarungan Ninjutsu Antar Gender!" }, { no: 5, title: "Murid Pindahan Misterius!" }, { no: 6, title: "Pelajaran Terakhir!" },
+            { no: 7, title: "Cinta dan Keripik Kentang!" }, { no: 8, title: "Wahyu Mimpi" }, { no: 9, title: "Bukti Diri Sendiri" },
+            { no: 10, title: "Insiden Hantu: Investigasi Dimulai!" }, { no: 11, title: "Bayangan Sang Dalang" }, { no: 12, title: "Boruto dan Mitsuki" },
+            { no: 13, title: "Monster Iblis Muncul!" }, { no: 14, title: "Jalan yang Bisa Dilihat Boruto" }, { no: 15, title: "Jalan Baru" },
+            { no: 16, title: "Krisis: Ancaman Tinggal Kelas!" }, { no: 17, title: "Lari, Sarada!" }, { no: 18, title: "Sehari di Keluarga Uzumaki" },
+            { no: 19, title: "Sarada Uchiha" }, { no: 20, title: "Anak Laki-Laki dengan Sharingan" }, { no: 21, title: "Sasuke dan Sarada" },
+            { no: 22, title: "Perasaan yang Terhubung" }, { no: 23, title: "Ikatan Datang dalam Berbagai Bentuk" }, { no: 24, title: "Boruto dan Sarada" },
+            { no: 25, title: "Tur Lapangan yang Penuh Gejolak!" }, { no: 26, title: "Penerus Mizukage!" }, { no: 27, title: "Pertarungan Shinobi Persahabatan" },
+            { no: 28, title: "Deklarasi Perang" }, { no: 29, title: "Tujuh Pendekar Pedang Ninja Baru!" }, { no: 30, title: "Sharingan vs Pedang Petir, Kiba si Taring!" },
+            { no: 31, title: "Boruto dan Kagura" }, { no: 32, title: "Pencarian Oleh-Oleh" }, { no: 33, title: "Periksa Karaktermu" },
+            { no: 34, title: "Malam Bintang Jatuh" }, { no: 35, title: "Konferensi Orang Tua dan Guru!" }, { no: 36, title: "Ujian Kelulusan Dimulai!" },
+            { no: 37, title: "Tekad Seorang Shinobi!" }, { no: 38, title: "Pembentukan Tim Tiga Orang?" }, { no: 39, title: "Jalan Kebanggaan" },
+            { no: 40, title: "Tim 7: Misi Pertama!" }, { no: 41, title: "Kekuatan dalam Kesatuan" }, { no: 42, title: "Pekerjaan Seorang Ninja" },
+            { no: 43, title: "Aliansi Malam Putih" }, { no: 44, title: "Kecurigaan Shikadai" }, { no: 45, title: "Memori yang Dihilangkan" },
+            { no: 46, title: "Cara Pandang Keadilan" }, { no: 47, title: "Keinginan yang Membara" }, { no: 48, title: "Dokumenter Penelitian Genin" },
+            { no: 49, title: "Waswas, Hari Pembukaan Genin" }, { no: 50, title: "Rekomendasi Ujian Chuunin" }, { no: 51, title: "Hari Kelahiran Tim 3" },
+            { no: 52, title: "Bayangan Sasuke" }, { no: 53, title: "Ulang Tahun Himawari" }, { no: 54, title: "Sasuke dan Boruto" },
+            { no: 55, title: "Alat Ninja Ilmiah" }, { no: 56, title: "Saingan, Berkumpul!" }, { no: 57, title: "Pertarungan Sengit, Kebijaksanaan vs Kekuatan!" },
+            { no: 58, title: "Ujian Akhir: Pertarungan Kekacauan" }, { no: 59, title: "Boruto vs Shikadai" }, { no: 60, title: "Desa Daun vs Desa Pasir" },
+            { no: 61, title: "Urashiki Otsutsuki Menyerang" }, { no: 62, title: "Invasi Otsutsuki" }, { no: 63, title: "Jurus Rahasia Sasuke" },
+            { no: 64, title: "Menyelamatkan Naruto!" }, { no: 65, title: "Bapak dan Anak (Puncak Pertarungan Momoshiki)" }, { no: 66, title: "Kisahku!" },
+            { no: 67, title: "Mode Butterfly Chocho" }, { no: 68, title: "Mode Ciuman Chocho" }, { no: 69, title: "Insiden Cinta Chocho" },
+            { no: 70, title: "Sisi Lain Kecemasan" }, { no: 71, title: "Batu Keras yang Dicuri" }, { no: 72, title: "Keinginan Mitsuki" },
+            { no: 73, title: "Sisi Lain Mitsuki" }, { no: 74, title: "Menuju ke Gua Ryuchi" }, { no: 75, title: "Ujian dari Garaga" },
+            { no: 76, title: "Lawan yang Dihadapi di Hati" }, { no: 77, title: "Kemarahan Mitsuki" }, { no: 78, title: "Niat Sekikaku" },
+            { no: 79, title: "Pertemuan Kembali, Boruto dan Mitsuki" }, { no: 80, title: "Perasaan Boruto" }, { no: 81, title: "Pertempuran di Desa Batu" },
+            { no: 82, title: "Pertarungan Menentukan, Kokuyou" }, { no: 83, title: "Kehendak Ohnoki" }, { no: 84, title: "Pikiran Ohnoki, Pikiran Ku" },
+            { no: 85, title: "Jantung Buatan" }, { no: 86, title: "Pertarungan Sengit Koji" }, { no: 87, title: "Esensi Kehidupan" },
+            { no: 88, title: "Bentrokan, Kokuyou!" }, { no: 89, title: "Sebuah Tekad" }, { no: 90, title: "Mitsuki dan Sekaku" },
+            { no: 91, title: "Keinginan yang Diwariskan" }, { no: 92, title: "Perjalanan Pulang" }, { no: 93, title: "Hari Orang Tua dan Anak (Hari Ayah)" },
+            { no: 94, title: "Hari Orang Tua dan Anak (Timbunan Makanan)" }, { no: 95, title: "Turnamen Panco Keluarga" }, { no: 96, title: "Darah, Keringat, dan Air Mata (Namida)" },
+            { no: 97, title: "Keputusan Shikadai" }, { no: 98, title: "Kutukan Hutan" }, { no: 99, title: "Jugo dan Segel Kutukan" },
+            { no: 100, title: "Jalan yang Dipilih" }, { no: 101, title: "Kawanan Burung Terbang" }, { no: 102, title: "Pertempuran Sengit!" },
+            { no: 103, title: "Musim Migrasi" }, { no: 104, title: "Sahabat Kecil" }, { no: 105, title: "Luka di Hati" },
+            { no: 106, title: "Gulungan Ninja Uap: Misi S" }, { no: 107, title: "Anjing dan Kucing" }, { no: 108, title: "Hotel Berhantu" },
+            { no: 109, title: "Kereta Uap Penuh Tipu Muslihat" }, { no: 110, title: "Restoran Pemandian Air Panas" }, { no: 111, title: "Raja Pemandian Air Panas" },
+            { no: 112, title: "Konferensi Promosi Chuunin" }, { no: 113, title: "Beban Menjadi Pimpinan" }, { no: 114, title: "Kartu Ninja Saling Tukar" },
+            { no: 115, title: "Tim 25" }, { no: 116, title: "Konohamaru dan Remon" }, { no: 117, title: "Rahasia Remon" },
+            { no: 118, title: "Sesuatu yang Mencuri Kenangan" }, { no: 119, title: "Tekad Konohamaru" }, { no: 120, title: "Menuju Negeri Pasir" },
+            { no: 121, title: "Pertempuran Melindungi Shukaku" }, { no: 122, title: "Pertempuran Sengit Urashiki!" }, { no: 123, title: "Waktu Kebangkitan Urashiki" },
+            { no: 124, title: "Keputusan Urashiki" }, { no: 125, title: "Boruto dan Shinki" }, { no: 126, title: "Hadiah Shinki" },
+            { no: 127, title: "Rencana Rahasia Jiraiya" }, { no: 128, title: "Target: Konoha Masa Lalu" }, { no: 129, title: "Juru Selamat Konoha" },
+            { no: 130, title: "Genin, Berkumpul!" }, { no: 131, title: "Kekuatan Mantra Kyubi" }, { no: 132, title: "Tugas Jiraiya" },
+            { no: 133, title: "Pertempuran Terakhir, Urashiki" }, { no: 134, title: "Kekuatan Masa Lalu" }, { no: 135, title: "Perayaan Ulang Tahun Konoha" },
+            { no: 136, title: "Melewati Waktu" }, { no: 137, title: "Akademi Samurai, Sumire!" }, { no: 138, title: "Garis Keturunan Hiashi Hyuga" },
+            { no: 139, title: "Ketakutan Teror Penjara Hozuki" }, { no: 140, title: "Tipu Muslihat Narator" }, { no: 141, title: "Penjara Hozuki: Sel Rahasia" },
+            { no: 142, title: "Ujian Ketahanan Kelompok Mujina" }, { no: 143, title: "Penyelamatan Kokuri" }, { no: 144, title: "Rahasia di Balik Penjara" },
+            { no: 145, title: "Menjebol Penjara Hozuki" }, { no: 146, title: "Eksekusi Rencana Kabur" }, { no: 147, title: "Pertarungan di Bulan Purnama" },
+            { no: 148, title: "Babak Baru Mulai! Misi Penangkapan Pencuri Mujina" }, { no: 149, title: "Teman Sekamar" }, { no: 150, title: "Nilai Kartu Belati" },
+            { no: 151, title: "Boruto dan Tentou" }, { no: 152, title: "Mengembangkan Jurus Medis" }, { no: 153, title: "Rapat Evaluasi Tim 15" },
+            { no: 154, title: "Pengalaman Belajar Hinata dan Himawari" }, { no: 155, title: "Hari Sial Mitsuki" }, { no: 156, title: "Beban yang Harus Dibawa Chocho" },
+            { no: 157, title: "Jejak Organisasi Kara" }, { no: 158, title: "Kasus Hilangnya Orang" }, { no: 159, title: "Sel Hashirama" },
+            { no: 160, title: "Menuju ke Negeri Senyap" }, { no: 161, title: "Bentrok! Penjahat Sektor Hitam" }, { no: 162, title: "Pertarungan Sengit di Dalam Hujan" },
+            { no: 163, title: "Para Pengejar" }, { no: 164, title: "Alat Ninja Terlarang" }, { no: 165, title: "Tugas yang Dipertaruhkan Nyawa" },
+            { no: 166, title: "Pertempuran Mati-Matian" }, { no: 167, title: "Tekad Pertarungan" }, { no: 168, title: "Latihan Dimulai" },
+            { no: 169, title: "Misi Bersama ke Negeri Lembah" }, { no: 170, title: "Rasengan Baru" }, { no: 171, title: "Hasil Latihan" },
+            { no: 172, title: "Tanda Tangan Penandatanganan" }, { no: 173, title: "Rahasia di Bawah Ruang Bawah Tanah" }, { no: 174, title: "Kebangkitan Pohon Dewa" },
+            { no: 175, title: "Melampaui Batas!" }, { no: 176, title: "Pertempuran Pengamanan Gerbang Konoha" }, { no: 177, title: "Kereta Sensor Besi" },
+            { no: 178, title: "Garis Takdir Asuma" }, { no: 179, title: "Victor dan Kara" }, { no: 180, title: "Pembunuh Bayaran Mugino" },
+            { no: 181, title: "Wadah (Vessel)" }, { no: 182, title: "Ao" }, { no: 183, title: "Alat Ninja" },
+            { no: 184, title: "Boneka" }, { no: 185, title: "Alat" }, { no: 186, title: "Penggunaan" },
+            { no: 187, title: "Karma" }, { no: 188, title: "Masa Lalu Kawaki" }, { no: 189, title: "Kebebasan" },
+            { no: 190, title: "Pelarian" }, { no: 191, title: "Keluarga" }, { no: 192, title: "Masa Lalu" },
+            { no: 193, title: "Kerinduan Rumah" }, { no: 194, title: "Keluarga Uzumaki" }, { no: 195, title: "Pertemuan" },
+            { no: 196, title: "Ikatan Kekuatan" }, { no: 197, title: "Delta" }, { no: 198, title: "Monster" },
+            { no: 199, title: "Pertemuan Puncak Kage" }, { no: 200, title: "Rencana Menyelamatkan Naruto" }, { no: 201, title: "Air Mata Kosong" },
+            { no: 202, title: "Stigma" }, { no: 203, title: "Serangan Beruntun" }, { no: 204, title: "Ancaman Besar" },
+            { no: 205, title: "Bukti" }, { no: 206, title: "Tim 7 Baru" }, { no: 207, title: "Mode Baryon" },
+            { no: 208, title: "Kehancuran" }, { no: 209, title: "Outcast" }, { no: 210, title: "Petunjuk Tentang Kara" },
+            { no: 211, title: "Perburuan" }, { no: 212, title: "Pelarian Amado" }, { no: 213, title: "Kepribadian Sebenarnya" },
+            { no: 214, title: "Takdir" }, { no: 215, title: "Persiapan Terakhir" }, { no: 216, title: "Pengorbanan" },
+            { no: 217, title: "Keputusan Hidup atau Mati" }, { no: 218, title: "Partner" }, { no: 219, title: "Pulang" },
+            { no: 220, title: "Waktu yang Tersisa" }, { no: 221, title: "Ujian Chuunin Dimulai Kembali" }, { no: 222, title: "Malam Sebelum Pertempuran Penentuan" },
+            { no: 223, title: "Inojin vs Hoki" }, { no: 224, title: "Pertarungan Penentuan Antar Sahabat" }, { no: 225, title: "Pertarungan Penentuan Antar Teman Seangkatan" },
+            { no: 226, title: "Menjadi Chuunin?" }, { no: 227, title: "Misi Terakhir Tim 7" }, { no: 228, title: "Menuju ke Negeri Air" },
+            { no: 229, title: "Breaker" }, { no: 230, title: "Pertempuran Laut" }, { no: 231, title: "Pasukan Bajak Laut Funato" },
+            { no: 232, title: "Pertarungan Kapal Bajak Laut" }, { no: 233, title: "Bajak Laut Menyerang" }, { no: 234, title: "Dibebaskan dari Belenggu" },
+            { no: 235, title: "Medan Perang di Pulau Dema" }, { no: 236, title: "Pembelotan Kagura" }, { no: 237, title: "Keputusan Bencana" },
+            { no: 238, title: "Kapal Pembunuh" }, { no: 239, title: "Target di Pulau Pelabuhan" }, { no: 240, title: "Tempat Tinggal Para Nelayan" },
+            { no: 241, title: "Jejak Masa Lalu" }, { no: 242, title: "Tekad yang Sama" }, { no: 243, title: "Tempat untuk Pulang" },
+            { no: 244, title: "Pertarungan Hidup Mati Ikada" }, { no: 245, title: "Kemarahan Boruto" }, { no: 246, title: "Noda Darah" },
+            { no: 247, title: "Untuk Ikada" }, { no: 248, title: "Keputusan Akhir" }, { no: 249, title: "Batas Perjuangan Laut" },
+            { no: 250, title: "Darah yang Mengalir" }, { no: 251, title: "Keputusan yang Diambil" }, { no: 252, title: "Keinginan yang Ingin Disampaikan" },
+            { no: 253, title: "Konflik yang Terpecah" }, { no: 254, title: "Janji yang Ditepati" }, { no: 255, title: "Secercah Harapan" },
+            { no: 256, title: "Resep yang Gagal" }, { no: 257, title: "Petualangan Kakashi di Layar Lebar" }, { no: 258, title: "Perjalanan Air Panas Keluarga Uzumaki" },
+            { no: 259, title: "Luka Bawah Tanah" }, { no: 260, title: "Pernikahan Konohamaru & Remon" }, { no: 261, title: "Masuk Akademi (Kawaki Menyamar)" },
+            { no: 262, title: "Pertandingan Bola" }, { no: 263, title: "Pelatihan Rahasia" }, { no: 264, title: "Petualangan Sekolah Tujuh Misteri" },
+            { no: 265, title: "Pertandingan Tim" }, { no: 266, title: "Insiden Penculikan" }, { no: 267, title: "Petunjuk Penyelamatan" },
+            { no: 268, title: "Hari Olahraga Akademi" }, { no: 269, title: "Bayangan di Akademi" }, { no: 270, title: "Misteri Terungkap" },
+            { no: 271, title: "Hari Terakhir Akademi" }, { no: 272, title: "Rekonsiliasi Siswa" }, { no: 273, title: "Perpisahan Akademi" },
+            { no: 274, title: "Labyrinth Game" }, { no: 275, title: "Keluar dari Labirin" }, { no: 276, title: "Pelarian Berdarah Dingin" },
+            { no: 277, title: "Hilangnya Para Tahanan" }, { no: 278, title: "Tantangan Bertahan Hidup" }, { no: 279, title: "Pertempuran Ketujuh Tahanan" },
+            { no: 280, title: "Penyerangan Benteng" }, { no: 281, title: "Kebenaran di Balik Pelarian" }, { no: 282, title: "Sasuke Retsuden: Pendaratan di Institut Astronomi" },
+            { no: 283, title: "Sasuke Retsuden: Jejak Mata-Mata" }, { no: 284, title: "Sasuke Retsuden: Rahasia Bawah Tanah" }, { no: 285, title: "Sasuke Retsuden: Naga Langit" },
+            { no: 286, title: "Sasuke Retsuden: Cincin Pernikahan" }, { no: 287, title: "Jejak Code" }, { no: 288, title: "Cakaran Code" },
+            { no: 289, title: "Kualifikasi untuk Menjadi Monster" }, { no: 290, title: "Kehadiran Eida" }, { no: 291, title: "Kendali Penuh" },
+            { no: 292, title: "Keinginan yang Membabi Buta" }, { no: 293, title: "Perpisahan (Epilog Penutup)" }
+        ];
+
+        function renderEpisodes(list) {
+            const grid = document.getElementById('episodeGrid');
+            const resultCount = document.getElementById('resultCount');
+            grid.innerHTML = '';
+
+            resultCount.innerText = `Menampilkan ${list.length} dari 293 Episode`;
+
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="py-12 text-center space-y-2 bg-slate-900/40 border border-slate-800 rounded-xl">
+                        <i class="fa-solid fa-face-confused text-2xl text-slate-600"></i>
+                        <p class="text-slate-400 font-medium text-xs">Tidak ada episode yang cocok dengan pencarian Anda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.forEach(ep => {
+                const textToCopy = `🎬 Nonton Boruto Episode ${ep.no} - ${ep.title} -🍿 Boruto Next Generations - Suport By Arthur Jr.🤡`;
+                const promptTemplate = `Buatkan poster anime vertikal ukuran 572x1024 piksel tentang anime BORUTO (LOGO ASLI NYA). Di bagian atas tengah: Tulis teks judul sangat besar "BORUTO" dan di bawah logo Boruto tulis teks "Episode ${ep.no} - ${ep.title}" dengan ukuran besar posisi center tengah. Di pojok kanan bawah: Tambahkan karakter badut utuh (tampak seluruh tubuh dari kepala sampai kaki, bukan logo bulat) yang sedang melambaikan tangan menyapa. Di bagian bawah: Tambahkan teks "KLIK DAN TONTON" dan di garis paling bawah tulisan "Support By Arthur Jr.". BADUT MENYAPA. Visual disesuaikan dengan tema ninja anime Boruto yang ada di sinopsis Episode ${ep.no} (${ep.title}). SELALAU BERUBAH VISUAL DARI GAMBAR HASIL SEBLUMNYA JGAN PERNAH MIRIP ATAU MENYERUPAI.`;
+                
+                const rowCard = document.createElement('div');
+                rowCard.className = "group bg-borutoCard border border-slate-800/90 hover:border-borutoOrange/60 rounded-xl px-4 py-2 flex flex-col sm:flex-row items-start sm:items-center justify-start gap-4 transition-all duration-300 hover:shadow-lg hover:shadow-borutoOrange/10";
+                
+                rowCard.innerHTML = `
+                    <div class="flex items-center gap-2 w-full sm:w-auto pb-1.5 sm:pb-0 border-b sm:border-b-0 border-slate-800/80">
+                        <button type="button" class="copy-text-btn py-1.5 px-3 bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-amber-400 font-bold rounded-lg text-xs transition flex items-center justify-center gap-1.5 border border-slate-700/80 shadow-sm group/btn">
+                            <i class="fa-solid fa-copy text-amber-400 group-hover/btn:text-slate-950 text-xs transition"></i> 📋 Judul
+                        </button>
+                        <button type="button" class="copy-prompt-btn py-1.5 px-3 bg-gradient-to-r from-amber-500/20 to-borutoOrange/20 hover:from-amber-500 hover:to-borutoOrange text-amber-300 hover:text-slate-950 font-bold rounded-lg text-xs transition flex items-center justify-center gap-1.5 border border-amber-500/40 shadow-sm group/promptbtn">
+                            <i class="fa-solid fa-wand-magic-sparkles text-amber-400 group-hover/promptbtn:text-slate-950 text-xs transition"></i> Salin Prompt
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-slate-950 border border-slate-800 flex flex-col items-center justify-center p-0.5 text-center group-hover:border-amber-500/60 transition shadow-inner">
+                            <span class="text-[8px] text-slate-400 uppercase tracking-widest font-extrabold leading-none mb-0.5">EP</span>
+                            <span class="text-lg font-black text-amber-400 leading-none tracking-tight">${ep.no}</span>
+                        </div>
+                        <div class="space-y-0.5">
+                            <h3 class="text-xs sm:text-sm font-bold text-white group-hover:text-amber-300 transition leading-snug">
+                                Episode ${ep.no} - ${ep.title}
+                            </h3>
+                        </div>
+                    </div>
+                `;
+
+                rowCard.querySelector('.copy-text-btn').onclick = (e) => {
+                    e.stopPropagation();
+                    copyToClipboard(textToCopy, `Berhasil disalin: "${textToCopy}"`);
+                };
+
+                rowCard.querySelector('.copy-prompt-btn').onclick = (e) => {
+                    e.stopPropagation();
+                    copyToClipboard(promptTemplate, `Berhasil menyalin Prompt Poster Episode ${ep.no}!`);
+                };
+
+                grid.appendChild(rowCard);
+            });
+        }
+
+        function filterEpisodes() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const range = document.getElementById('rangeFilter').value;
+
+            let filtered = episodesData.filter(ep => {
+                const matchQuery = ep.no.toString().includes(query) || ep.title.toLowerCase().includes(query);
+                return matchQuery;
+            });
+
+            if (range !== 'all') {
+                const [min, max] = range.split('-').map(Number);
+                filtered = filtered.filter(ep => ep.no >= min && ep.no <= max);
+            }
+
+            renderEpisodes(filtered);
+        }
+
+        function copyToClipboard(text, successMessage) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(successMessage, 'success');
+                }).catch(() => fallbackCopyText(text, successMessage));
+            } else {
+                fallbackCopyText(text, successMessage);
+            }
+        }
+
+        function fallbackCopyText(text, successMessage) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '0';
+            textarea.style.left = '0';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                if (document.execCommand('copy')) {
+                    showToast(successMessage, 'success');
+                } else {
+                    showToast('Gagal menyalin teks.', 'error');
+                }
+            } catch {
+                showToast('Gagal menyalin teks.', 'error');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function copyMainPromptText(event) {
+            event.stopPropagation();
+            copyToClipboard(document.getElementById('subDescription').innerText, 'Berhasil menyalin Prompt Poster Utama ke clipboard!');
+        }
+
+        function toggleHeaderDesc() {
+            const desc = document.getElementById('subDescription');
+            const toggleText = document.getElementById('toggleText');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (desc.classList.contains('line-clamp-2')) {
+                desc.classList.remove('line-clamp-2');
+                toggleText.innerText = 'Sembunyikan';
+                toggleIcon.className = 'fa-solid fa-chevron-up text-[9px]';
+            } else {
+                desc.classList.add('line-clamp-2');
+                toggleText.innerText = 'Selengkapnya';
+                toggleIcon.className = 'fa-solid fa-chevron-down text-[9px]';
+            }
+        }
+
+        function openDownloadModal() {
+            document.getElementById('downloadModal').classList.remove('hidden');
+        }
+
+        function closeDownloadModal() {
+            document.getElementById('downloadModal').classList.add('hidden');
+        }
+
+        function downloadFile(format) {
+            let content = "";
+            let filename = `Boruto_293_Episodes.${format}`;
+            let mimeType = "text/plain;charset=utf-8;";
+
+            if (format === 'csv') {
+                content = "Nomor Episode,Judul Episode\n" + episodesData.map(ep => `${ep.no},"${ep.title}"`).join("\n");
+                mimeType = "text/csv;charset=utf-8;";
+            } else if (format === 'json') {
+                content = JSON.stringify(episodesData, null, 2);
+                mimeType = "application/json;charset=utf-8;";
+            } else if (format === 'txt') {
+                content = episodesData.map(ep => `Episode ${ep.no} - ${ep.title}`).join("\n");
+                mimeType = "text/plain;charset=utf-8;";
+            }
+
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            closeDownloadModal();
+            showToast(`Berhasil mengunduh berkas ${filename.toUpperCase()}!`, 'success');
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-emerald-950/95 border-emerald-500/50 text-emerald-300' : 'bg-red-950/95 border-red-500/50 text-red-300';
+            const icon = type === 'success' ? 'fa-circle-check text-emerald-400' : 'fa-circle-exclamation text-red-400';
+
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border shadow-2xl backdrop-blur-md transition-all duration-300 translate-y-2 opacity-0 ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i><div class="text-xs font-semibold">${message}</div>`;
+
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.onload = function() {
+            renderEpisodes(episodesData);
+        };
+    </script>
+</body>
+</html>
